@@ -1,0 +1,6 @@
+/*
+ * Loaded after tailwind.css, so anything defined here wins over Tailwind
+ * utility classes at equal specificity without needing !important.
+ * Use this file (or add more, imported in main.js) for hand-written CSS
+ * when a component needs styling that doesn't fit the utility approach.
+ */

@@ -1,11 +1,10 @@
 <script setup>
-import { ref } from 'vue'
-
-const message = ref('Attendance app frontend is running')
+import NavBar from './components/NavBar.vue'
 </script>
 
 <template>
-  <main>
-    <h1>{{ message }}</h1>
-  </main>
+  <div class="min-h-screen bg-slate-50">
+    <NavBar />
+    <RouterView />
+  </div>
 </template>
