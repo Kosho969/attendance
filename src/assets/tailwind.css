@@ -1,3 +1,8 @@
+/* custom.css is imported first so its rules are collected into the same
+   Tailwind build pass; @layer below controls cascade order in the output
+   regardless of import position, so custom.css still overrides utilities. */
+@import './custom.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

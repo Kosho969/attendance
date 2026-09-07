@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import Icon from '../components/Icon.vue'
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -34,70 +35,67 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <main class="max-w-sm mx-auto mt-16 px-4">
-    <h1 class="text-xl font-semibold text-slate-800 mb-6">Create an account</h1>
-
-    <form class="space-y-4" @submit.prevent="handleSubmit">
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1" for="name">Name</label>
-        <input
-          id="name"
-          v-model="name"
-          type="text"
-          required
-          class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400"
-        />
+  <main class="min-h-[calc(100vh-4.25rem)] flex items-center justify-center px-4 py-12 bg-gradient-to-b from-brand-50/60 to-slate-50">
+    <div class="w-full max-w-sm">
+      <div class="flex justify-center mb-6">
+        <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-600 text-white shadow-md">
+          <Icon name="logo" class="h-7 w-7" />
+        </span>
       </div>
 
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1" for="email">Email</label>
-        <input
-          id="email"
-          v-model="email"
-          type="email"
-          required
-          class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400"
-        />
+      <div class="surface-card p-8">
+        <h1 class="text-xl font-semibold text-slate-900 text-center">Create an account</h1>
+        <p class="text-sm text-slate-500 text-center mt-1 mb-6">Start hosting and tracking activities</p>
+
+        <form class="space-y-4" @submit.prevent="handleSubmit">
+          <div>
+            <label class="field-label" for="name">Name</label>
+            <input id="name" v-model="name" type="text" required autocomplete="name" class="field-input" />
+          </div>
+
+          <div>
+            <label class="field-label" for="email">Email</label>
+            <input id="email" v-model="email" type="email" required autocomplete="email" class="field-input" />
+          </div>
+
+          <div>
+            <label class="field-label" for="password">Password</label>
+            <input
+              id="password"
+              v-model="password"
+              type="password"
+              required
+              autocomplete="new-password"
+              class="field-input"
+            />
+          </div>
+
+          <div>
+            <label class="field-label" for="password_confirmation">Confirm password</label>
+            <input
+              id="password_confirmation"
+              v-model="passwordConfirmation"
+              type="password"
+              required
+              autocomplete="new-password"
+              class="field-input"
+            />
+          </div>
+
+          <p v-if="error" class="field-error">{{ error }}</p>
+
+          <button type="submit" :disabled="loading" class="btn-primary w-full">
+            {{ loading ? 'Creating account…' : 'Register' }}
+          </button>
+        </form>
       </div>
 
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1" for="password">Password</label>
-        <input
-          id="password"
-          v-model="password"
-          type="password"
-          required
-          class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400"
-        />
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1" for="password_confirmation">
-          Confirm password
-        </label>
-        <input
-          id="password_confirmation"
-          v-model="passwordConfirmation"
-          type="password"
-          required
-          class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400"
-        />
-      </div>
-
-      <p v-if="error" class="text-sm text-red-600">{{ error }}</p>
-
-      <button
-        type="submit"
-        :disabled="loading"
-        class="w-full rounded-md bg-slate-800 text-white text-sm font-medium py-2 hover:bg-slate-700 disabled:opacity-50"
-      >
-        {{ loading ? 'Creating account...' : 'Register' }}
-      </button>
-    </form>
-
-    <p class="text-sm text-slate-500 mt-4">
-      Already have an account?
-      <RouterLink :to="{ name: 'login' }" class="text-slate-800 underline">Log in</RouterLink>
-    </p>
+      <p class="text-sm text-slate-500 text-center mt-6">
+        Already have an account?
+        <RouterLink :to="{ name: 'login' }" class="font-medium text-brand-700 hover:text-brand-800">
+          Log in
+        </RouterLink>
+      </p>
+    </div>
   </main>
 </template>

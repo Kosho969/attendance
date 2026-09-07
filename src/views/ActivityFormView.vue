@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '../lib/api'
 import { useAuthStore } from '../stores/auth'
+import Icon from '../components/Icon.vue'
 
 const router = useRouter()
 const auth = useAuthStore()
@@ -50,79 +51,59 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <main class="max-w-lg mx-auto px-4 py-8">
-    <h1 class="text-xl font-semibold text-slate-800 mb-6">New activity</h1>
+  <main class="max-w-lg mx-auto px-4 sm:px-6 py-10">
+    <RouterLink :to="{ name: 'activities' }" class="btn-ghost !px-2 !py-1 -ml-2 mb-4">
+      <Icon name="arrow-left" class="h-4 w-4" />
+      <span>Back</span>
+    </RouterLink>
 
-    <form class="space-y-4" @submit.prevent="handleSubmit">
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1" for="title">Title</label>
-        <input
-          id="title"
-          v-model="title"
-          type="text"
-          required
-          class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400"
-        />
-      </div>
+    <div class="surface-card p-8">
+      <h1 class="text-xl font-semibold text-slate-900">New activity</h1>
+      <p class="text-sm text-slate-500 mt-1 mb-6">Set the details, then share the QR code with attendees.</p>
 
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1" for="subject">Subject</label>
-        <input
-          id="subject"
-          v-model="subject"
-          type="text"
-          required
-          class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400"
-        />
-      </div>
+      <form class="space-y-4" @submit.prevent="handleSubmit">
+        <div>
+          <label class="field-label" for="title">Title</label>
+          <input id="title" v-model="title" type="text" required class="field-input" placeholder="Opening ceremony" />
+        </div>
 
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1" for="host">Host</label>
-        <select
-          id="host"
-          v-model="hostId"
-          required
-          class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400"
-        >
-          <option v-for="user in users" :key="user.id" :value="user.id">
-            {{ user.name }} ({{ user.email }})
-          </option>
-        </select>
-      </div>
+        <div>
+          <label class="field-label" for="subject">Subject</label>
+          <input id="subject" v-model="subject" type="text" required class="field-input" placeholder="Welcome talk" />
+        </div>
 
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1" for="location">
-          Location <span class="text-slate-400">(optional)</span>
-        </label>
-        <input
-          id="location"
-          v-model="location"
-          type="text"
-          class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400"
-        />
-      </div>
+        <div>
+          <label class="field-label" for="host">Host</label>
+          <select id="host" v-model="hostId" required class="field-input">
+            <option v-for="user in users" :key="user.id" :value="user.id">
+              {{ user.name }} ({{ user.email }})
+            </option>
+          </select>
+        </div>
 
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1" for="starts_at">
-          Starts at <span class="text-slate-400">(optional)</span>
-        </label>
-        <input
-          id="starts_at"
-          v-model="startsAt"
-          type="datetime-local"
-          class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400"
-        />
-      </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="field-label" for="location">
+              Location <span class="text-slate-400 font-normal">(optional)</span>
+            </label>
+            <input id="location" v-model="location" type="text" class="field-input" placeholder="Main hall" />
+          </div>
 
-      <p v-if="error" class="text-sm text-red-600">{{ error }}</p>
+          <div>
+            <label class="field-label" for="starts_at">
+              Starts at <span class="text-slate-400 font-normal">(optional)</span>
+            </label>
+            <input id="starts_at" v-model="startsAt" type="datetime-local" class="field-input" />
+          </div>
+        </div>
 
-      <button
-        type="submit"
-        :disabled="loading"
-        class="w-full rounded-md bg-slate-800 text-white text-sm font-medium py-2 hover:bg-slate-700 disabled:opacity-50"
-      >
-        {{ loading ? 'Creating...' : 'Create activity' }}
-      </button>
-    </form>
+        <p v-if="error" class="field-error">{{ error }}</p>
+
+        <button type="submit" :disabled="loading" class="btn-primary w-full">
+          <Icon name="qr-code" class="h-4 w-4" />
+          {{ loading ? 'Creating…' : 'Create activity' }}
+        </button>
+      </form>
+    </div>
   </main>
 </template>
