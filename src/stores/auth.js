@@ -8,12 +8,17 @@ export const useAuthStore = defineStore('auth', {
   }),
   getters: {
     isAuthenticated: (state) => !!state.token,
+    mustChangePassword: (state) => !!state.user?.must_change_password,
   },
   actions: {
     setSession(token, user) {
       this.token = token
       this.user = user
       localStorage.setItem('auth_token', token)
+      localStorage.setItem('auth_user', JSON.stringify(user))
+    },
+    setUser(user) {
+      this.user = user
       localStorage.setItem('auth_user', JSON.stringify(user))
     },
     clearSession() {
@@ -29,6 +34,10 @@ export const useAuthStore = defineStore('auth', {
     async login({ email, password }) {
       const { data } = await api.post('/login', { email, password })
       this.setSession(data.token, data.user)
+    },
+    async changePassword({ current_password, password, password_confirmation }) {
+      const { data } = await api.put('/user/password', { current_password, password, password_confirmation })
+      this.setUser(data)
     },
     async logout() {
       try {

@@ -15,6 +15,12 @@ const routes = [
     meta: { guestOnly: true },
   },
   {
+    path: '/change-password',
+    name: 'change-password',
+    component: () => import('../views/ChangePasswordView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/',
     name: 'activities',
     component: () => import('../views/ActivitiesView.vue'),
@@ -53,6 +59,10 @@ router.beforeEach((to) => {
 
   if (to.meta.guestOnly && auth.isAuthenticated) {
     return { name: 'activities' }
+  }
+
+  if (auth.isAuthenticated && auth.mustChangePassword && to.name !== 'change-password') {
+    return { name: 'change-password' }
   }
 
   return true

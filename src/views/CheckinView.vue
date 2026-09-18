@@ -3,6 +3,8 @@ import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '../lib/api'
 import Icon from '../components/Icon.vue'
+import WorkshopSurveyForm from '../components/WorkshopSurveyForm.vue'
+import EventSurveyForm from '../components/EventSurveyForm.vue'
 
 const route = useRoute()
 
@@ -15,6 +17,9 @@ const email = ref('')
 const submitting = ref(false)
 const submitError = ref('')
 const result = ref(null)
+
+// 'form' -> 'workshop-survey' -> 'event-survey' (if not already answered) -> 'done'
+const step = ref('form')
 
 async function loadActivity() {
   loading.value = true
@@ -40,12 +45,21 @@ async function handleSubmit() {
       email: email.value,
     })
     result.value = data
+    step.value = 'workshop-survey'
   } catch (e) {
     const errors = e.response?.data?.errors
     submitError.value = errors ? Object.values(errors).flat().join(' ') : 'Could not check in.'
   } finally {
     submitting.value = false
   }
+}
+
+function handleWorkshopSurveySubmitted() {
+  step.value = result.value.event_survey_completed ? 'done' : 'event-survey'
+}
+
+function handleEventSurveySubmitted() {
+  step.value = 'done'
 }
 
 function formatTime(value) {
@@ -73,16 +87,23 @@ function formatTime(value) {
         <p class="text-sm text-slate-600 mt-4">{{ loadError }}</p>
       </div>
 
-      <div v-else-if="result" class="surface-card p-8 text-center">
+      <div v-else-if="step === 'done'" class="surface-card p-8 text-center">
         <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
           <Icon name="check-circle" class="h-8 w-8" />
         </div>
-        <h1 class="text-lg font-semibold text-slate-900 mt-4">
-          {{ result.already_checked_in ? 'Already checked in' : "You're checked in!" }}
-        </h1>
+        <h1 class="text-lg font-semibold text-slate-900 mt-4">¡Gracias!</h1>
         <p class="text-sm text-slate-600 mt-1">{{ activity.title }}</p>
         <p class="text-sm text-slate-400 mt-1">{{ formatTime(result.checked_in_at) }}</p>
       </div>
+
+      <WorkshopSurveyForm
+        v-else-if="step === 'workshop-survey'"
+        :token="route.params.token"
+        :email="email"
+        @submitted="handleWorkshopSurveySubmitted"
+      />
+
+      <EventSurveyForm v-else-if="step === 'event-survey'" :email="email" @submitted="handleEventSurveySubmitted" />
 
       <template v-else-if="activity">
         <div class="flex justify-center mb-6">

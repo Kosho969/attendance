@@ -39,6 +39,10 @@ function initials(name) {
           <span class="avatar h-8 w-8 text-xs">{{ initials(auth.user?.name) }}</span>
           <span class="text-sm text-slate-600">{{ auth.user?.name }}</span>
         </div>
+        <RouterLink :to="{ name: 'change-password' }" class="btn-ghost !px-3 !py-1.5">
+          <Icon name="lock" class="h-4 w-4" />
+          <span class="hidden sm:inline">Change password</span>
+        </RouterLink>
         <button type="button" class="btn-ghost !px-3 !py-1.5" @click="handleLogout">
           <Icon name="log-out" class="h-4 w-4" />
           <span>Log out</span>

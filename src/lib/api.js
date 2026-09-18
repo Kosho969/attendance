@@ -22,6 +22,11 @@ api.interceptors.response.use(
         window.location.href = '/login'
       }
     }
+    if (error.response?.status === 403 && error.response?.data?.code === 'password_change_required') {
+      if (window.location.pathname !== '/change-password') {
+        window.location.href = '/change-password'
+      }
+    }
     return Promise.reject(error)
   }
 )
