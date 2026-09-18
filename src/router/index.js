@@ -45,14 +45,9 @@ const routes = [
   },
 ]
 
-const router = createRouter({
-  history: createWebHistory(),
-  routes,
-})
-
-router.beforeEach((to) => {
-  const auth = useAuthStore()
-
+// Pure so it's testable without a real router/history: given the target route
+// and the auth store's state, decide whether to redirect.
+export function resolveGuard(to, auth) {
   if (to.meta.requiresAuth && !auth.isAuthenticated) {
     return { name: 'login', query: { redirect: to.fullPath } }
   }
@@ -66,6 +61,13 @@ router.beforeEach((to) => {
   }
 
   return true
+}
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
 })
+
+router.beforeEach((to) => resolveGuard(to, useAuthStore()))
 
 export default router
