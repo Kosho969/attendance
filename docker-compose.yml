@@ -1,8 +1,18 @@
+## Values come from .env (gitignored); see .env.example.
+
 services:
   web:
-    build: .
+    build:
+      context: .
+      args:
+        # Baked into the bundle at build time — `docker compose up -d --build web`
+        # is required after changing it.
+        VITE_API_URL: ${VITE_API_URL:?set VITE_API_URL in .env}
     ports:
-      - "127.0.0.1:8080:80"
+      # Loopback only: TLS and the public hostname (python.ccti.gt) are handled
+      # by the host's reverse proxy, which forwards to this port. Set
+      # WEB_BIND=0.0.0.0 only if the proxy runs on another machine.
+      - "${WEB_BIND:-127.0.0.1}:${WEB_PORT:-8400}:80"
     restart: unless-stopped
 
   dev:
@@ -12,7 +22,8 @@ services:
       - .:/app
       - node_modules:/app/node_modules
     ports:
-      - "127.0.0.1:5173:5173"
+      - "5173:5173"
+    # Reads VITE_API_URL from .env at startup, so no rebuild is needed here.
     command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
     profiles:
       - dev

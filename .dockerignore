@@ -1,0 +1,14 @@
+# Keep the local .env out of the build context: the production API URL is
+# supplied as the VITE_API_URL build arg, and a copied .env could otherwise
+# shadow it and bake a localhost URL into the bundle.
+.env
+.env.*
+!.env.example
+
+.git
+.gitignore
+node_modules
+dist
+.DS_Store
+docker-compose*.yml
+Dockerfile
